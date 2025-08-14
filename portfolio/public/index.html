@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disha Gupta | Data Analyst Portfolio</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" xintegrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        :root {
+            --primary-color: #10c7e8;
+            --background-color: #121212;
+            --surface-color: #1e1e1e;
+            --text-color: #e0e0e0;
+            --text-secondary-color: #a0a0a0;
+            --border-color: #333333;
+            --dark-gray: #2a2a2a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+       .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        section {
+            padding: 6rem 0;
+            border-bottom: 1px solid var(--border-color);
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+            position: relative;
+            z-index: 1;
+        }
+
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        section:last-of-type {
+            border-bottom: none;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            color: white;
+        }
+
+        h1 { font-size: 3.5rem; margin-bottom: 1rem; }
+        h2 { font-size: 2.5rem; text-align: center; margin-bottom: 4rem; position: relative; }
+        h2::after { content: '';  display: block; width: 80px; height: 4px; background: var(--primary-color); margin: 0.5rem auto 0; border-radius: 2px; }
+        h3 { font-size: 1.5rem; color: var(--primary-color); margin-bottom: 1rem; }
+        p { color: var(--text-secondary-color); margin-bottom: 1rem; font-family: 'Inter', sans-serif; }
+        a { color: var(--primary-color); text-decoration: none; transition: color 0.3s ease; }
+        a:hover { color: white; }
+
+        /* --- Header & Navigation --- */
+        .header {
+            background-color: rgba(18, 18, 18, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 0.75rem 0;
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+       .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+       .logo { font-size: 1.8rem; font-weight: 700; color: white; display: flex; align-items: center; }
+       .logo img { margin-right: 0.5rem; }
+       .logo span { color: var(--primary-color); }
+
+        /* --- Navigation Menu (Slide-out) --- */
+        .nav-links {
+            position: fixed;
+            top: 0;
+            right: -100%; /* Initially hidden */
+            height: 100vh;
+            width: 70%;
+            max-width: 300px;
+            background-color: var(--surface-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            transition: right 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+            box-shadow: -5px 0 15px rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+
+        .nav-links.active {
+            right: 0; /* Slide in when active */
+        }
+
+        .nav-links a {
+            font-size: 1.5rem;
+            margin: 1.5rem 0;
+            color: var(--text-color);
+            position: relative;
+        }
+        
+       .nav-links a::after { content: ''; position: absolute; width: 0; height: 2px; display: block; margin-top: 5px; right: 0; background: var(--primary-color); transition: width 0.4s ease; }
+       .nav-links a:hover::after { width: 100%; left: 0; }
+
+        /* --- Hamburger Menu Icon --- */
+        .hamburger {
+            display: block; /* Always visible */
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        /* --- Hero Section --- */
+        #home { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; min-height: 100vh; padding-top: 0; }
+        .profile-pic { width: 200px; height: 200px; border-radius: 50%; object-fit: cover; margin-bottom: 2rem; border: 5px solid var(--primary-color); box-shadow: 0 0 25px rgba(16, 199, 232, 0.4); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .profile-pic:hover { transform: scale(1.05); box-shadow: 0 0 35px rgba(16, 199, 232, 0.6); }
+        #home .tagline { font-size: 1.2rem; max-width: 600px; margin-bottom: 2rem; }
+        .hero-links { display: flex; justify-content: center; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
+        .social-icon { font-size: 2rem; color: var(--text-secondary-color); transition: color 0.3s ease, transform 0.3s ease; }
+        .social-icon:hover { color: var(--primary-color); transform: translateY(-5px); }
+        .resume-btn { font-family: 'Poppins', sans-serif; font-size: 1rem; font-weight: 700; padding: 0.6rem 1.5rem; color: var(--primary-color); background-color: transparent;text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s ease;}
+        .resume-btn:hover { color: white; transform: translateY(-5px); box-shadow: 0 5px 15px rgba(16, 199, 232, 0.4); }
+        .resume-btn i { margin-right: 0.5rem; }
+
+        /* --- About Section --- */
+       .about-content { display: flex; gap: 3rem; align-items: flex-start; }
+       .about-text { flex: 2; }
+       .about-image { flex: 1; text-align: center; }
+       .about-image img { max-width: 250px; border-radius: 15px; border: 3px solid var(--border-color); }
+       .publication { background: var(--surface-color); padding: 1.5rem; border-left: 4px solid var(--primary-color); border-radius: 8px; margin-top: 1.5rem; }
+       .publication h4 { color: white; margin-bottom: 0.5rem; }
+       
+        /* --- Experience Section --- */
+        .experience-timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .experience-timeline::after {
+            content: '';
+            position: absolute;
+            width: 3px;
+            background-color: var(--border-color);
+            top: 0;
+            bottom: 0;
+            left: 15px;
+        }
+        .experience-item {
+            padding: 1rem 2rem 2rem 4rem;
+            position: relative;
+        }
+        .experience-item::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: var(--background-color);
+            border: 4px solid var(--primary-color);
+            top: 15px;
+            left: 6px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        .experience-content {
+            padding: 1.5rem;
+            background: var(--surface-color);
+            border-radius: 8px;
+            position: relative;
+        }
+        .experience-date { font-size: 0.9rem; color: var(--primary-color); font-weight: 600; margin-bottom: 0.5rem; }
+        .experience-title { font-size: 1.3rem; margin-bottom: 0.5rem; }
+        .experience-title a { color: white; }
+        .experience-title a:hover { color: var(--primary-color); }
+        .experience-company { color: var(--text-secondary-color); margin-bottom: 1rem; }
+        .experience-description { list-style-position: inside; }
+        .experience-description li { margin-bottom: 0.5rem; }
+
+        /* --- Skills Section --- */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        .skill-category {
+            background: var(--surface-color);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+        }
+        .skill-category h3 {
+            font-family: 'Poppins', sans-serif;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        .skill-list {
+            list-style: none;
+            padding: 0;
+        }
+        .skill-list li {
+            margin-bottom: 1rem;
+            color: var(--text-secondary-color);
+        }
+        .skill-list i {
+            margin-right: 0.75rem;
+        }
+
+        /* --- Projects Section --- */
+       .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; }
+       .project-card { background: var(--surface-color); border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: transform 0.3s ease, box-shadow 0.3s ease; display: flex; flex-direction: column; }
+       .project-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 0 20px rgba(16, 199, 232, 0.5), 0 0 30px rgba(16, 199, 232, 0.3);
+        }
+       .project-image { width: 100%; height: 200px; overflow: hidden; }
+       .project-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+       .project-card:hover .project-image img { transform: scale(1.05); }
+       .project-info { padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column; }
+       .project-info h3 { font-size: 1.3rem; }
+       .project-tools { margin-top: auto; padding-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+       .project-tools span { background: var(--background-color); color: var(--primary-color); padding: 0.25rem 0.75rem; border-radius: 15px; font-size: 0.8rem; font-weight: 500; }
+       .project-links { padding: 1rem 1.5rem; background: rgba(0,0,0,0.2); text-align: right; }
+       .project-links a { font-weight: 500; font-size: 1rem; transition: letter-spacing 0.3s ease; }
+       .project-links a:hover { letter-spacing: 1px; }
+       .project-links i { margin-left: 0.5rem; }
+
+        /* --- Contact & Footer --- */
+        #contact { text-align: center; }
+        #contact p { max-width: 500px; margin: 0 auto 2rem auto; }
+       .contact-details a { display: inline-block; font-size: 1.1rem; margin: 0.5rem 1rem; color: var(--text-secondary-color); }
+       .contact-details a:hover { color: var(--primary-color); }
+       .contact-details i { margin-right: 0.5rem; }
+       .footer { text-align: center; padding: 2rem 0; background: var(--surface-color); }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            h2 { font-size: 2rem; }
+            section { padding: 4rem 1rem; }
+            .about-content { flex-direction: column; }
+            .profile-pic { width: 150px; height: 150px; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particle-canvas"></canvas>
+
+    <header class="header">
+        <div class="container">
+            <a href="#home" class="logo">
+                <img src="image.jpeg" alt="Analytics Logo" style="width: 30px; height: 30px; border-radius: 50%;">
+                <span>Disha</span>
+            </a>
+            <nav class="nav-links" id="nav-links">
+                <a href="#home">Home</a>
+                <a href="#about">About</a>
+                <a href="#experience">Experience</a>
+                <a href="#skills">Skills</a>
+                <a href="#projects">Projects</a>
+                <a href="#contact">Contact</a>
+            </nav>
+            <button class="hamburger" id="hamburger" aria-label="Open navigation menu">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <section id="home">
+            <div class="container">
+                <img src="dishaa.jpg" alt="A portrait of Disha Gupta" class="profile-pic">
+                <h1>Hi, I'm Disha Gupta</h1>
+                <p class="tagline">
+                    Aspiring Data Analyst with hands-on experience in data visualization, statistical analysis, and dashboard development using Python, SQL, and Power BI. Passionate about turning data into actionable insights.
+                </p>
+                <div class="hero-links">
+                    <a href="https://www.linkedin.com/in/disha-gupta-892687274/" target="_blank" aria-label="LinkedIn" class="social-icon"><i class="fab fa-linkedin"></i></a>
+                    <a href="https://github.com/disha28118" target="_blank" aria-label="GitHub" class="social-icon"><i class="fab fa-github"></i></a>
+                    <a href="DishaGupta_Resume.pdf" download="DishaGupta_Resume.pdf" class="resume-btn" aria-label="Resume">
+                        <i class="fas fa-download"></i> Resume
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="about">
+            <div class="container">
+                <h2>About Me</h2>
+                <div class="about-content">
+                    <div class="about-text">
+                        <h3>Data-driven Storyteller</h3>
+                        <p>
+                            I am a dedicated and detail-oriented Data Analyst, currently pursuing a Bachelor of Technology in Computer Science. My journey in data began with a fascination for uncovering the stories hidden within numbers. This passion led me to translate complex business scenarios into effective, insightful visuals.
+                        </p>
+                        <p>
+                            My technical skills are rooted in a strong foundation of Python and SQL, which I've applied to build practical solutions ranging from AI-powered dashboards to automated data cleaning microservices. I thrive on the challenge of transforming raw data into clean, structured information that drives strategic decision-making.
+                        </p>
+                         <div class="publication">
+                            <h4>Upcoming Publication</h4>
+                            <p>
+                                "AI-Driven Early Disease Detection" <br> To be published in "Cognitive IoT in Biomedical Devices: The Next Evolution in Smart Healthcare, 2025"
+                            </p>
+                        </div>
+                    </div>
+                    <div class="about-image">
+                        <img src="data.jpeg" alt="Disha Gupta">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="experience">
+            <div class="container">
+                <h2>Experience</h2>
+                <div class="experience-timeline">
+                    <div class="experience-item">
+                        <div class="experience-content">
+                            <div class="experience-date">July 2024 - April 2025</div>
+                            <h3 class="experience-title">
+                                <a href="Tata.pdf" target="_blank" rel="noopener noreferrer">
+                                    Virtual Internship <i class="fas fa-external-link-alt fa-xs"></i>
+                                </a>
+                            </h3>
+                            <div class="experience-company">Tata Data Visualisation (Forage)</div>
+                            <ul class="experience-description">
+                                <li>Completed practical business tasks focused on framing scenarios and selecting appropriate visuals.</li>
+                                <li>Gained hands-on exposure to data visualization techniques aligned with business goals.</li>
+                                <li>Developed professional-level deliverables using Power BI and data storytelling strategies.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills">
+            <div class="container">
+                <h2>Skills & Expertise</h2>
+                <div class="skills-grid">
+                    <div class="skill-category">
+                        <h3><i class="fas fa-code"></i> Languages & Tools</h3>
+                        <ul class="skill-list">
+                            <li><i class="fab fa-python"></i> Python</li>
+                            <li><i class="fas fa-database"></i> SQL</li>
+                            <li><i class="fas fa-chart-bar"></i> Power BI & Tableau</li>
+                            <li><i class="fas fa-file-excel"></i> Excel</li>
+                            <li><i class="fas fa-wind"></i> Streamlit</li>
+                        </ul>
+                    </div>
+                    <div class="skill-category">
+                        <h3><i class="fas fa-cogs"></i> Core Competencies</h3>
+                         <ul class="skill-list">
+                            <li><i class="fas fa-broom"></i> Data Cleaning & Preprocessing</li>
+                            <li><i class="fas fa-chart-pie"></i> Data Visualization</li>
+                            <li><i class="fas fa-calculator"></i> Statistical Analysis</li>
+                            <li><i class="fas fa-lightbulb"></i> Prompt Engineering</li>
+                        </ul>
+                    </div>
+                    <div class="skill-category">
+                        <h3><i class="fas fa-tools"></i> Platforms & Other</h3>
+                        <ul class="skill-list">
+                            <li><i class="fab fa-git-alt"></i> Git & GitHub</li>
+                            <li><i class="fab fa-docker"></i> Docker</li>
+                            <li><i class="fas fa-terminal"></i> VS Code</li>
+                            <li><i class="fas fa-book"></i> Jupyter Notebook</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects">
+            <div class="container">
+                <h2>My Projects</h2>
+                <div class="projects-grid">
+                    <div class="project-card">
+                        <div class="project-image">
+                            <img src="BHD.jpg" alt="Business Health Dashboard Project">
+                        </div>
+                        <div class="project-info">
+                            <h3>Business Health Dashboard</h3>
+                            <p>An AI-powered Streamlit dashboard for automated data cleaning, anomaly detection, custom visualizations, and PDF report generation.</p>
+                            <div class="project-tools">
+                                <span>Python</span> <span>Streamlit</span> <span>Scikit-learn</span> <span>Plotly</span> <span>Pandas</span>
+                            </div>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://github.com/disha28118/Business_Health_Dashboard" target="_blank">Source Code <i class="fab fa-github"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="project-card">
+                        <div class="project-image">
+                            <img src="DaaS.jpg" alt="DaaS_API">
+                        </div>
+                        <div class="project-info">
+                            <h3>DaaS_API</h3>
+                            <p>A FastAPI-based microservice for automating data cleaning tasks like deduplication, missing value imputation, and schema validation.</p>
+                            <div class="project-tools">
+                                <span>Python</span> <span>FastAPI</span> <span>Pydantic</span>
+                            </div>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://github.com/disha28118/DaaS_API" target="_blank">Source Code <i class="fab fa-github"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="project-card">
+                        <div class="project-image">
+                            <img src="HPP.jpg" alt="House_Price_Prediction">
+                        </div>
+                        <div class="project-info">
+                            <h3>House Price Prediction</h3>
+                            <p>Built and evaluated various regression models to predict housing prices based on location, area, and amenities.</p>
+                            <div class="project-tools">
+                                <span>Python</span> <span>Scikit-learn</span> <span>Pandas</span> <span>Matplotlib</span>
+                            </div>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://github.com/disha28118/House_Price_Prediction" target="_blank">Source Code <i class="fab fa-github"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact">
+            <div class="container">
+                <h2>Get In Touch</h2>
+                <p>
+                    I'm always open to new opportunities and to be part of an amazing team.<br> Feel free to reach out to me.
+                </p>
+                <div class="contact-details">
+                    <a href="mailto:dishaa28118@gmail.com"><i class="fas fa-envelope"></i> dishaa28118@gmail.com</a>
+                    <a href="tel:+916393738728"><i class="fas fa-phone"></i> +91 6393738728</a>
+                </div>
+                 <div class="hero-links" style="margin-top: 2rem;">
+                    <a href="https://www.linkedin.com/in/disha-gupta-892687274/" target="_blank" aria-label="LinkedIn" class="social-icon"><i class="fab fa-linkedin"></i></a>
+                    <a href="https://github.com/disha28118" target="_blank" aria-label="GitHub" class="social-icon"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Mobile Navigation ---
+            const hamburger = document.getElementById('hamburger');
+            const navLinks = document.getElementById('nav-links');
+            const navLinksItems = navLinks.querySelectorAll('a');
+
+            hamburger.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+
+            navLinksItems.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (navLinks.classList.contains('active')) {
+                        navLinks.classList.remove('active');
+                    }
+                });
+            });
+
+            // --- Section Scroll Animations ---
+            const sections = document.querySelectorAll('section');
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+
+            // --- Particle Animation Script ---
+            const canvas = document.getElementById('particle-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            let particlesArray;
+
+            let mouse = {
+                x: null,
+                y: null,
+                radius: (canvas.height / 90) * (canvas.width / 90)
+            }
+            window.addEventListener('mousemove', function(event) {
+                mouse.x = event.x;
+                mouse.y = event.y;
+            });
+
+            class Particle {
+                constructor(x, y, directionX, directionY, size, color) {
+                    this.x = x;
+                    this.y = y;
+                    this.directionX = directionX;
+                    this.directionY = directionY;
+                    this.size = size;
+                    this.color = color;
+                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                    ctx.fillStyle = 'rgba(16, 199, 232, 0.15)';
+                    ctx.fill();
+                }
+                update() {
+                    if (this.x > canvas.width || this.x < 0) { this.directionX = -this.directionX; }
+                    if (this.y > canvas.height || this.y < 0) { this.directionY = -this.directionY; }
+                    
+                    let dx = mouse.x - this.x;
+                    let dy = mouse.y - this.y;
+                    let distance = Math.sqrt(dx*dx + dy*dy);
+                    if(distance < mouse.radius + this.size){
+                        if(mouse.x < this.x && this.x < canvas.width - this.size * 10){ this.x+=5; }
+                        if(mouse.x > this.x && this.x > this.size * 10){ this.x-=5; }
+                        if(mouse.y < this.y && this.y < canvas.height - this.size * 10){ this.y+=5; }
+                        if(mouse.y > this.y && this.y > this.size * 10){ this.y-=5; }
+                    }
+                    this.x += this.directionX;
+                    this.y += this.directionY;
+                    this.draw();
+                }
+            }
+            function init() {
+                particlesArray = [];
+                let numberOfParticles = (canvas.height * canvas.width) / 9000;
+                for (let i = 0; i < numberOfParticles; i++) {
+                    let size = (Math.random() * 3) + 1;
+                    let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+                    let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+                    let directionX = (Math.random() * 0.4) - 0.2;
+                    let directionY = (Math.random() * 0.4) - 0.2;
+                    particlesArray.push(new Particle(x, y, directionX, directionY, size));
+                }
+            }
+            function animate() {
+                requestAnimationFrame(animate);
+                ctx.clearRect(0, 0, innerWidth, innerHeight);
+
+                for (let i = 0; i < particlesArray.length; i++) {
+                    particlesArray[i].update();
+                }
+            }
+            
+            init();
+            animate();
+
+            window.addEventListener('resize', function(){
+                canvas.width = innerWidth;
+                canvas.height = innerHeight;
+                mouse.radius = ((canvas.height/80) * (canvas.height/80));
+                init();
+            });
+        });
+    </script>
+</body>
+</html>
